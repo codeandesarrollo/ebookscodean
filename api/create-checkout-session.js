@@ -25,6 +25,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ id: session.id });
   } catch (error) {
     console.error('Error creando la sesión de Checkout:', error);
+    console.log('STRIPE_SECRET_KEY:', JSON.stringify(process.env.STRIPE_SECRET_KEY));
+
     return res.status(500).json({ error: 'Error creando la sesión de Checkout' });
   }
 }
