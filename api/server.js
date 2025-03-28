@@ -1,5 +1,5 @@
 const stripe = require('stripe')('sk_live_...'); // Tu clave secreta
-app.post('/server', async (req, res) => {
+app.post('/api/server', async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
