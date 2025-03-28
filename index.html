@@ -161,7 +161,7 @@
     document.getElementById('comprar-btn').addEventListener('click', async () => {
       try {
         // Llama a tu endpoint para crear la sesión de Checkout
-        const response = await fetch('/api/server', { method: 'POST' });
+        const response = await fetch('/api/create-checkout-session', { method: 'POST' });
         const data = await response.json();
         // Redirige al usuario a la URL de Stripe Checkout usando el session.id
         window.location.href = `https://checkout.stripe.com/pay/${data.id}`;
