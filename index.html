@@ -3,172 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tienda de eBooks</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+  <title>Compra Exitosa</title>
   <style>
-    body {
-      font-family: 'Montserrat', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #ffffff;
-      color: #444;
-    }
-    header {
-      background-color: #0d47a1;
-      color: #fff;
-      padding: 1.5rem;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
-    nav {
-      background-color: #1976d2;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-      justify-content: center;
-      margin: 0;
-      padding: 0.5rem;
-    }
-    nav ul li {
-      margin: 0 1rem;
-    }
-    nav ul li a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: space-between;
-    }
-    .ebook {
-      background-color: #fafafa;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      overflow: hidden;
-      transition: box-shadow 0.3s ease;
-      width: calc(25% - 1rem); /* Cuatro por fila en pantallas grandes */
-      display: flex;
-      flex-direction: column;
-    }
-    .ebook:hover {
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-    .ebook img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-      display: block;
-    }
-    .ebook-info {
-      padding: 1rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .ebook-info h2 {
-      margin-top: 0;
-      font-size: 1.1rem;
-    }
-    .price {
-      font-size: 1rem;
-      color: #d32f2f;
-      margin: 0.5rem 0;
-    }
-    .buy-button {
-      background-color: #d32f2f;
-      color: #fff;
-      border: none;
-      padding: 0.4rem 0.8rem;
-      cursor: pointer;
-      border-radius: 4px;
-      text-decoration: none;
-      text-align: center;
-      transition: background-color 0.3s ease;
-      font-size: 0.9rem;
-    }
-    .buy-button:hover {
-      background-color: #b71c1c;
-    }
-    footer {
-      background-color: #0d47a1;
-      color: #fff;
-      text-align: center;
-      padding: 1rem;
-      margin-top: 2rem;
-      font-size: 0.9rem;
-    }
-    @media (max-width: 1200px) {
-      .ebook {
-        width: calc(33.333% - 1rem); /* Tres por fila */
-      }
-    }
-    @media (max-width: 900px) {
-      .ebook {
-        width: calc(50% - 1rem); /* Dos por fila */
-      }
-    }
-    @media (max-width: 600px) {
-      .ebook {
-        width: 100%; /* Una por fila */
-      }
-      .ebook-info {
-        text-align: center;
-      }
-    }
+    body { font-family: 'Montserrat', sans-serif; padding: 2rem; text-align: center; }
+    .message { margin-top: 2rem; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Tienda de eBooks</h1>
-  </header>
-  <nav>
-    <ul>
-      <li><a href="#">Inicio</a></li>
-      <li><a href="#">Libros</a></li>
-      <li><a href="#">Contacto</a></li>
-    </ul>
-  </nav>
-  <div class="container">
-    <!-- Ejemplo de eBook 1 -->
-    <div class="ebook">
-      <img src="imagenes/portada.png" alt="Portada del eBook">
-      <div class="ebook-info">
-        <h2>El Bosque Encantado: Una Aventura Mágica</h2>
-        <p class="price">$17.00</p>
-        <p>El Bosque Encantado: Una Aventura Mágica, acompañarás a nuestra valiente protagonista mientras se adentra en este universo encantado</p>
-        <!-- Botón de compra que llama a tu endpoint para crear la sesión de Checkout -->
-        <button id="comprar-btn" class="buy-button">Comprar</button>
-      </div>
-    </div>
-  </div>
-  <footer>
-    <p>&copy; 2025 Tienda de eBooks. Todos los derechos reservados.</p>
-  </footer>
-  
+  <h1>¡Gracias por tu compra!</h1>
+  <p>Estamos verificando tu pago, por favor espera...</p>
+  <div id="download-container" class="message"></div>
+
   <script>
-    document.getElementById('comprar-btn').addEventListener('click', async () => {
-      try {
-        // Llama a tu endpoint para crear la sesión de Checkout
-        const response = await fetch('/api/create-checkout-session', { method: 'POST' });
-        const data = await response.json();
-        // Redirige al usuario a la URL de Stripe Checkout usando el session.id
-        window.location.href = `https://checkout.stripe.com/pay/${data.id}`;
-      } catch (error) {
-        console.error('Error creando la sesión de Checkout:', error);
-      }
-    });
+    // Extraer el session_id de la URL
+    const stripe = Stripe("pk_live_51R7PfpCAX45Er1QqAA5hzD9pemaDsaEAwpj8Q7KcZOxTWVlveTmNvv8mNzZMoJWCJnIC5Be0zp4p44t2QxMwrrEt00W2R4qT6B"); 
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+
+    if (!sessionId) {
+      document.getElementById('download-container').innerHTML = '<p>Error: session_id no encontrado.</p>';
+    } else {
+      // Llamada a nuestro endpoint de verificación
+      fetch(`/api/verify?session_id=${sessionId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('download-container').innerHTML = '<p>Pago confirmado. Redirigiendo a la descarga...</p>';
+            // Redirigir automáticamente al endpoint de descarga
+            window.location.href = data.downloadUrl;
+          } else {
+            document.getElementById('download-container').innerHTML = '<p>El pago aún no se ha confirmado. Por favor, inténtalo nuevamente más tarde.</p>';
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          document.getElementById('download-container').innerHTML = '<p>Ocurrió un error, por favor intenta de nuevo.</p>';
+        });
+    }
   </script>
 </body>
 </html>
