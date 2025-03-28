@@ -6,20 +6,40 @@
   <title>Compra Exitosa</title>
   <style>
     body { font-family: 'Montserrat', sans-serif; padding: 2rem; text-align: center; }
-    .download-link {
-      background-color: #d32f2f;
-      color: #fff;
-      padding: 1rem 2rem;
-      border-radius: 4px;
-      text-decoration: none;
-      display: inline-block;
-      margin-top: 1rem;
-    }
+    .message { margin-top: 2rem; }
   </style>
 </head>
 <body>
   <h1>¡Gracias por tu compra!</h1>
-  <p>Haz clic en el siguiente enlace para descargar tu eBook:</p>
-  <a href="ruta-al-ebook/ebook.pdf" class="download-link" download>Descargar eBook</a>
+  <p>Estamos verificando tu pago, por favor espera...</p>
+  <div id="download-container" class="message"></div>
+
+  <script>
+    // Extraer el session_id de la URL
+    
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+
+    if (!sessionId) {
+      document.getElementById('download-container').innerHTML = '<p>Error: session_id no encontrado.</p>';
+    } else {
+      // Llamada a nuestro endpoint de verificación
+      fetch(`/api/verify?session_id=${sessionId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('download-container').innerHTML = '<p>Pago confirmado. Redirigiendo a la descarga...</p>';
+            // Redirigir automáticamente al endpoint de descarga
+            window.location.href = data.downloadUrl;
+          } else {
+            document.getElementById('download-container').innerHTML = '<p>El pago aún no se ha confirmado. Por favor, inténtalo nuevamente más tarde.</p>';
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          document.getElementById('download-container').innerHTML = '<p>Ocurrió un error, por favor intenta de nuevo.</p>';
+        });
+    }
+  </script>
 </body>
 </html>
