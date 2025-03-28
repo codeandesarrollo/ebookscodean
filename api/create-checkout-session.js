@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       line_items: [
         {
           // Usa el ID de precio (price_...) y no el ID del producto
-          price: 'price_1R7QiPCAX45Er1QqpMDE26iz',
+          price: 'price_1R7mSoCAX45Er1QqgyUh5nuQ',
           quantity: 1,
         },
       ],
