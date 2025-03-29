@@ -132,28 +132,43 @@
       <li><a href="#">Contacto</a></li>
     </ul>
   </nav>
+  
   <div class="container">
-    <!-- Ejemplo de eBook 1 -->
+    <!-- Producto 1 -->
     <div class="ebook">
       <img src="imagenes/portada.png" alt="Portada del eBook">
       <div class="ebook-info">
         <h2>El Bosque Encantado: Una Aventura Mágica</h2>
         <p class="price">$17.00</p>
-        <p>El Bosque Encantado: Una Aventura Mágica, acompañarás a nuestra valiente protagonista mientras se adentra en este universo encantado</p>
-        <button id="comprar-btn" class="buy-button">Comprar</button>
+        <p>El Bosque Encantado: Una Aventura Mágica...</p>
+        <!-- Botón con data-price-id específico -->
+        <button 
+          class="buy-button" 
+          data-price-id="price_1R7mzeCAX45Er1QqKB375ePk"
+        >
+          Comprar
+        </button>
       </div>
     </div>
-    <!-- Ejemplo de eBook 1 -->
+
+    <!-- Producto 2 -->
     <div class="ebook">
       <img src="imagenes/harry.webp" alt="Portada del eBook">
       <div class="ebook-info">
-        <h2>Harry Poter El Legado Maldito</h2>
+        <h2>Harry Potter El Legado Maldito</h2>
         <p class="price">$10.00</p>
-        <p>Harry Potter y el legado maldito sigue a Harry Potter adulto y su hijo Albus. Albus lucha por vivir a la altura de las expectativas de su padre y se hace amigo de Scorpius Malfoy</p>
-        <button id="comprar-btn" class="buy-button">Comprar</button>
+        <p>Harry Potter y el legado maldito...</p>
+        <!-- Botón con otro data-price-id distinto -->
+        <button 
+          class="buy-button" 
+          data-price-id="price_1R7QiPCAX45Er1QqpMDE26iz"
+        >
+          Comprar
+        </button>
       </div>
     </div>
   </div>
+  
   <footer>
     <p>&copy; 2025 Tienda de eBooks. Todos los derechos reservados.</p>
   </footer>
@@ -162,26 +177,33 @@
   <script src="https://js.stripe.com/v3/"></script>
   <script>
     // Inicializa Stripe con tu clave publicable
-    const stripe = Stripe("pk_live_51R7PfpCAX45Er1QqAA5hzD9pemaDsaEAwpj8Q7KcZOxTWVlveTmNvv8mNzZMoJWCJnIC5Be0zp4p44t2QxMwrrEt00W2R4qT6B"); // Reemplaza con tu clave publicable real
+    const stripe = Stripe("pk_live_51R7PfpCAX45Er1QqAA5hzD9pemaDsaEAwpj8Q7KcZOxTWVlveTmNvv8mNzZMoJWCJnIC5Be0zp4p44t2QxMwrrEt00W2R4qT6B");
 
-// En tu script, selecciona todos los botones y añade el event listener a cada uno
-document.querySelectorAll('.buy-button').forEach(button => {
-  button.addEventListener('click', async () => {
-    try {
-      // Llama a tu endpoint para crear la sesión de Checkout
-      const response = await fetch('/api/create-checkout-session', { method: 'POST' });
-      const data = await response.json();
-      // Redirige al usuario a la página de pago
-      const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
-      if (error) {
-        console.error('Error en redirectToCheckout:', error);
-      }
-    } catch (error) {
-      console.error('Error creando la sesión de Checkout:', error);
-    }
-  });
-});
+    // Selecciona todos los botones de compra
+    document.querySelectorAll('.buy-button').forEach(button => {
+      button.addEventListener('click', async (event) => {
+        // Obtén el priceId desde el atributo data-price-id
+        const priceId = event.target.getAttribute('data-price-id');
 
+        try {
+          // Llama a tu endpoint para crear la sesión de Checkout
+          const response = await fetch('/api/create-checkout-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ priceId }), // Enviamos el priceId
+          });
+
+          const data = await response.json();
+          // Redirige al usuario a la página de pago de Stripe
+          const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
+          if (error) {
+            console.error('Error en redirectToCheckout:', error);
+          }
+        } catch (error) {
+          console.error('Error creando la sesión de Checkout:', error);
+        }
+      });
+    });
   </script>
 </body>
 </html>
