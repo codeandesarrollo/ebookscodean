@@ -14,13 +14,9 @@ export default async function handler(req, res) {
         {
           // Usa el ID de precio (price_...) y no el ID del producto
           price: 'price_1R7QiPCAX45Er1QqpMDE26iz',
-          quantity: 1,
+          quantity: 2,
         },
-        {
-          // Usa el ID de precio (price_...) y no el ID del producto
-          price: 'price_1R7QiPCAX45Er1QqpMDE26iz',
-          quantity: 1,
-        },
+        
       ],
       mode: 'payment',
       success_url: 'https://ebookscodean.vercel.app/exito.html?session_id={CHECKOUT_SESSION_ID}',
