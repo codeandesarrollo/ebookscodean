@@ -8,6 +8,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const priceFileMap = {
   'price_1R7mzeCAX45Er1QqKB375ePk': 'una-aventura-magica.pdf',
   'price_1R7QiPCAX45Er1QqMDE26iz': 'El-legado-maldito.pdf',
+  'price_1R81oMCAX45Er1QqOzEIzu6n': 'Piedra-Filosofal.pdf',
+  'price_1R82VHCAX45Er1QqdlcymSH2': 'El-misterio-del-principe.pdf',
 };
 
 export default async function handler(req, res) {
