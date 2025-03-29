@@ -46,29 +46,33 @@
       max-width: 1200px;
       margin: 2rem auto;
       padding: 0 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
     }
     .ebook {
       background-color: #fafafa;
       border: 1px solid #e0e0e0;
-      border-radius: 4px;
+      border-radius: 8px;
       overflow: hidden;
-      transition: box-shadow 0.3s ease;
-      width: calc(25% - 1rem);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
     }
     .ebook:hover {
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
     }
     .ebook img {
       width: 100%;
-      height: auto;
-      object-fit: cover;
-      display: block;
+      max-height: 180px;
+      object-fit: contain;
+      background-color: #fff;
+      transition: transform 0.3s ease;
+    }
+    .ebook:hover img {
+      transform: scale(1.05);
     }
     .ebook-info {
       padding: 1rem;
@@ -78,8 +82,12 @@
       justify-content: space-between;
     }
     .ebook-info h2 {
-      margin-top: 0;
+      margin: 0 0 0.5rem;
       font-size: 1.1rem;
+      transition: color 0.3s ease;
+    }
+    .ebook:hover .ebook-info h2 {
+      color: #0d47a1;
     }
     .price {
       font-size: 1rem;
@@ -90,13 +98,14 @@
       background-color: #d32f2f;
       color: #fff;
       border: none;
-      padding: 0.4rem 0.8rem;
+      padding: 0.5rem;
       cursor: pointer;
       border-radius: 4px;
       text-decoration: none;
       text-align: center;
       transition: background-color 0.3s ease;
       font-size: 0.9rem;
+      margin-top: 1rem;
     }
     .buy-button:hover {
       background-color: #b71c1c;
@@ -109,16 +118,6 @@
       margin-top: 2rem;
       font-size: 0.9rem;
     }
-    @media (max-width: 1200px) {
-      .ebook { width: calc(33.333% - 1rem); }
-    }
-    @media (max-width: 900px) {
-      .ebook { width: calc(50% - 1rem); }
-    }
-    @media (max-width: 600px) {
-      .ebook { width: 100%; }
-      .ebook-info { text-align: center; }
-    }
   </style>
 </head>
 <body>
@@ -127,21 +126,18 @@
   </header>
   <nav>
     <ul>
-      <li><a href="#">Inicio</a></li>
-      <li><a href="#">Libros</a></li>
-      <li><a href="#">Contacto</a></li>
+
     </ul>
   </nav>
   
   <div class="container">
     <!-- Producto 1 -->
     <div class="ebook">
-      <img src="imagenes/portada.png" alt="Portada del eBook">
+      <img src="imagenes/portada.jpg" alt="Portada del eBook">
       <div class="ebook-info">
         <h2>El Bosque Encantado: Una Aventura Mágica</h2>
         <p class="price">$10.00</p>
-        <p>El Bosque Encantado: Una Aventura Mágica...</p>
-        <!-- Botón con data-price-id específico -->
+        <p>Descubre una aventura mágica en un bosque lleno de misterios.</p>
         <button 
           class="buy-button" 
           data-price-id="price_1R7mzeCAX45Er1QqKB375ePk"
@@ -157,8 +153,7 @@
       <div class="ebook-info">
         <h2>Harry Potter El Legado Maldito</h2>
         <p class="price">$17.00</p>
-        <p>Harry Potter y el legado maldito...</p>
-        <!-- Botón con otro data-price-id distinto -->
+        <p>Vive la magia y el misterio en una nueva entrega del mundo de Harry Potter.</p>
         <button 
           class="buy-button" 
           data-price-id="price_1R7QiPCAX45Er1QqpMDE26iz"
@@ -168,15 +163,13 @@
       </div>
     </div>
 
-    
-    <!-- Producto 2 -->
+    <!-- Producto 3 -->
     <div class="ebook">
       <img src="imagenes/filosofal.jpg" alt="Portada del eBook">
       <div class="ebook-info">
         <h2>Harry Potter Y la Piedra Filosofal</h2>
         <p class="price">$17.00</p>
-        <p>Harry Potter y el legado maldito...</p>
-        <!-- Botón con otro data-price-id distinto -->
+        <p>Regresa al inicio de la mágica aventura de Harry Potter.</p>
         <button 
           class="buy-button" 
           data-price-id="price_1R81oMCAX45Er1QqOzEIzu6n"
@@ -195,25 +188,18 @@
   <!-- Carga Stripe.js -->
   <script src="https://js.stripe.com/v3/"></script>
   <script>
-    // Inicializa Stripe con tu clave publicable
     const stripe = Stripe("pk_live_51R7PfpCAX45Er1QqAA5hzD9pemaDsaEAwpj8Q7KcZOxTWVlveTmNvv8mNzZMoJWCJnIC5Be0zp4p44t2QxMwrrEt00W2R4qT6B");
 
-    // Selecciona todos los botones de compra
     document.querySelectorAll('.buy-button').forEach(button => {
       button.addEventListener('click', async (event) => {
-        // Obtén el priceId desde el atributo data-price-id
         const priceId = event.target.getAttribute('data-price-id');
-
         try {
-          // Llama a tu endpoint para crear la sesión de Checkout
           const response = await fetch('/api/create-checkout-session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ priceId }), // Enviamos el priceId
+            body: JSON.stringify({ priceId }),
           });
-
           const data = await response.json();
-          // Redirige al usuario a la página de pago de Stripe
           const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
           if (error) {
             console.error('Error en redirectToCheckout:', error);
