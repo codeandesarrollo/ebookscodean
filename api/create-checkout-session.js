@@ -8,15 +8,17 @@ export default async function handler(req, res) {
   }
 
   try {
+    // 1. Obtenemos el priceId que se envía desde el front-end
+    const { priceId } = req.body;
+
+    // 2. Creamos la sesión de Checkout
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
-          // Usa el ID de precio (price_...) y no el ID del producto
-          price: 'price_1R7QiPCAX45Er1QqpMDE26iz',
-          quantity: 2,
+          price: priceId, // Usamos el priceId recibido
+          quantity: 1,    // Ajusta la cantidad según tu caso
         },
-        
       ],
       mode: 'payment',
       success_url: 'https://ebookscodean.vercel.app/exito.html?session_id={CHECKOUT_SESSION_ID}',
@@ -26,8 +28,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ id: session.id });
   } catch (error) {
     console.error('Error creando la sesión de Checkout:', error);
-    console.log('STRIPE_SECRET_KEY:', JSON.stringify(process.env.STRIPE_SECRET_KEY));
-
     return res.status(500).json({ error: 'Error creando la sesión de Checkout' });
   }
 }
