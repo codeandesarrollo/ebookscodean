@@ -1,7 +1,8 @@
 import Stripe from 'stripe';
 import jwt from 'jsonwebtoken';
 
-const stripe = new Stripe(process.env.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);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Mapeo inline: priceId -> nombre del archivo PDF
