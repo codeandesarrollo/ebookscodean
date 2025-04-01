@@ -19,10 +19,27 @@
       padding: 1.5rem;
       text-align: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
     }
     header h1 {
       margin: 0;
       font-size: 2.5rem;
+    }
+    /* Ícono del carrito */
+    #cart-container {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+    #cart-button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    #cart-count {
+      font-weight: bold;
     }
     nav {
       background-color: #1976d2;
@@ -94,7 +111,8 @@
       color: #d32f2f;
       margin: 0.5rem 0;
     }
-    .buy-button {
+    .buy-button,
+    .add-to-cart-button {
       background-color: #d32f2f;
       color: #fff;
       border: none;
@@ -105,9 +123,10 @@
       text-align: center;
       transition: background-color 0.3s ease;
       font-size: 0.9rem;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
     }
-    .buy-button:hover {
+    .buy-button:hover,
+    .add-to-cart-button:hover {
       background-color: #b71c1c;
     }
     footer {
@@ -118,79 +137,123 @@
       margin-top: 2rem;
       font-size: 0.9rem;
     }
+    /* Estilos para el modal del carrito */
+    #cart-modal {
+      display: none; /* Oculto por defecto */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #cart-modal.open {
+      display: flex;
+    }
+    #cart-content {
+      background: #fff;
+      width: 90%;
+      max-width: 400px;
+      padding: 1rem;
+      border-radius: 8px;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    #cart-close {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .cart-item {
+      border-bottom: 1px solid #ccc;
+      padding: 0.5rem 0;
+    }
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+    #checkout-btn {
+      background-color: #d32f2f;
+      color: #fff;
+      border: none;
+      padding: 0.5rem;
+      width: 100%;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+    #checkout-btn:hover {
+      background-color: #b71c1c;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Tienda de eBooks</h1>
+    <!-- Ícono del carrito -->
+    <div id="cart-container">
+      <button id="cart-button">🛒 (<span id="cart-count">0</span>)</button>
+    </div>
   </header>
   <nav>
     <ul>
-
+      <!-- Enlaces de navegación (si los necesitas) -->
     </ul>
   </nav>
   
   <div class="container">
     <!-- Producto 1 -->
-    <div class="ebook">
+    <div class="ebook" data-title="El Bosque Encantado: Una Aventura Mágica" data-price="$10.00" data-price-id="price_1R7mzeCAX45Er1QqKB375ePk">
       <img src="imagenes/portada.jpg" alt="Portada del eBook">
       <div class="ebook-info">
         <h2>El Bosque Encantado: Una Aventura Mágica</h2>
         <p class="price">$10.00</p>
         <p>Descubre una aventura mágica en un bosque lleno de misterios.</p>
-        <button 
-          class="buy-button" 
-          data-price-id="price_1R7mzeCAX45Er1QqKB375ePk"
-        >
-          Comprar
-        </button>
+        <button class="buy-button" data-price-id="price_1R7mzeCAX45Er1QqKB375ePk">Comprar</button>
+        <button class="add-to-cart-button">Agregar al carrito</button>
       </div>
     </div>
 
     <!-- Producto 2 -->
-    <div class="ebook">
+    <div class="ebook" data-title="Harry Potter El Legado Maldito" data-price="$17.00" data-price-id="price_1R7QiPCAX45Er1QqpMDE26iz">
       <img src="imagenes/harry.webp" alt="Portada del eBook">
       <div class="ebook-info">
         <h2>Harry Potter El Legado Maldito</h2>
         <p class="price">$17.00</p>
         <p>Vive la magia y el misterio en una nueva entrega del mundo de Harry Potter.</p>
-        <button 
-          class="buy-button" 
-          data-price-id="price_1R7QiPCAX45Er1QqpMDE26iz"
-        >
-          Comprar
-        </button>
+        <button class="buy-button" data-price-id="price_1R7QiPCAX45Er1QqpMDE26iz">Comprar</button>
+        <button class="add-to-cart-button">Agregar al carrito</button>
       </div>
     </div>
 
     <!-- Producto 3 -->
-    <div class="ebook">
+    <div class="ebook" data-title="Harry Potter Y la Piedra Filosofal" data-price="$13.00" data-price-id="price_1R81oMCAX45Er1QqOzEIzu6n">
       <img src="imagenes/filosofal.jpg" alt="Portada del eBook">
       <div class="ebook-info">
         <h2>Harry Potter Y la Piedra Filosofal</h2>
         <p class="price">$13.00</p>
         <p>Regresa al inicio de la mágica aventura de Harry Potter.</p>
-        <button 
-          class="buy-button" 
-          data-price-id="price_1R81oMCAX45Er1QqOzEIzu6n"
-        >
-          Comprar
-        </button>
+        <button class="buy-button" data-price-id="price_1R81oMCAX45Er1QqOzEIzu6n">Comprar</button>
+        <button class="add-to-cart-button">Agregar al carrito</button>
       </div>
     </div>
-     <!-- Producto 4 -->
-     <div class="ebook">
+
+    <!-- Producto 4 -->
+    <div class="ebook" data-title="Harry Potter Y El principe Mestiso" data-price="$13.00" data-price-id="price_1R82VHCAX45Er1QqdlcymSH2">
       <img src="imagenes/el misterio.jpg" alt="Portada del eBook">
       <div class="ebook-info">
         <h2>Harry Potter Y El principe Mestiso</h2>
         <p class="price">$13.00</p>
         <p>Regresa al inicio de la mágica aventura de Harry Potter.</p>
-        <button 
-          class="buy-button" 
-          data-price-id="price_1R82VHCAX45Er1QqdlcymSH2"
-        >
-          Comprar
-        </button>
+        <button class="buy-button" data-price-id="price_1R82VHCAX45Er1QqdlcymSH2">Comprar</button>
+        <button class="add-to-cart-button">Agregar al carrito</button>
       </div>
     </div>
     
@@ -200,20 +263,72 @@
     <p>&copy; 2025 Tienda de eBooks. Todos los derechos reservados.</p>
   </footer>
   
-  <!-- Carga Stripe.js -->
+  <!-- Modal del carrito -->
+  <div id="cart-modal">
+    <div id="cart-content">
+      <button id="cart-close">&times;</button>
+      <h2>Tu Carrito</h2>
+      <div id="cart-items">
+        <!-- Aquí se agregarán los productos -->
+      </div>
+      <button id="checkout-btn">Checkout</button>
+    </div>
+  </div>
+  
+  <!-- Carga Stripe.js si lo necesitas para el checkout real -->
   <script src="https://js.stripe.com/v3/"></script>
   <script>
+    // Inicialización de Stripe (si se requiere para el checkout)
     const stripe = Stripe("pk_live_51R7PfpCAX45Er1QqAA5hzD9pemaDsaEAwpj8Q7KcZOxTWVlveTmNvv8mNzZMoJWCJnIC5Be0zp4p44t2QxMwrrEt00W2R4qT6B");
-  
+
+    // Array para almacenar los productos agregados al carrito
+    const cartItems = [];
+
+    // Actualiza el contador visual del carrito
+    function updateCartCount() {
+      document.getElementById('cart-count').textContent = cartItems.length;
+    }
+
+    // Renderiza los productos en el modal del carrito
+    function renderCart() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      cartItemsContainer.innerHTML = "";
+      cartItems.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = "cart-item";
+        div.innerHTML = `<strong>${item.title}</strong><br>${item.price}`;
+        cartItemsContainer.appendChild(div);
+      });
+    }
+
+    // Funcionalidad para agregar productos al carrito usando el botón dedicado
+    document.querySelectorAll('.add-to-cart-button').forEach(button => {
+      button.addEventListener('click', (event) => {
+        // Prevenir que el click se propague al contenedor principal
+        event.stopPropagation();
+        // Buscar el contenedor del producto para obtener sus datos
+        const ebook = button.closest('.ebook');
+        const title = ebook.getAttribute('data-title');
+        const price = ebook.getAttribute('data-price');
+        const priceId = ebook.getAttribute('data-price-id');
+        // Agregar el producto al carrito
+        cartItems.push({ title, price, priceId });
+        updateCartCount();
+        renderCart();
+      });
+    });
+
+    // Funcionalidad de los botones "Comprar" para redirigir a Stripe
     document.querySelectorAll('.buy-button').forEach(button => {
       button.addEventListener('click', async (event) => {
-        event.stopPropagation(); // Para evitar que el click burbujee y se ejecute el listener del contenedor
-        const priceId = event.target.getAttribute('data-price-id');
+        // Evitar que se propague el click al contenedor .ebook
+        event.stopPropagation();
+        const priceId = button.getAttribute('data-price-id');
         try {
           const response = await fetch('/api/create-checkout-session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ priceId }),
+            body: JSON.stringify({ priceId })
           });
           const data = await response.json();
           const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
@@ -225,18 +340,45 @@
         }
       });
     });
-  
-    // Listener para que cualquier click en el contenedor .ebook active el botón de compra
-    document.querySelectorAll('.ebook').forEach(ebook => {
-      ebook.addEventListener('click', (event) => {
-        // Verifica si el click NO proviene del botón o de sus hijos
-        if (!event.target.closest('.buy-button')) {
-          // Dispara el click en el botón de compra dentro del contenedor
-          ebook.querySelector('.buy-button').click();
+
+    // Abrir el modal del carrito al hacer click en el ícono del carrito
+    document.getElementById('cart-button').addEventListener('click', () => {
+      document.getElementById('cart-modal').classList.add('open');
+    });
+
+    // Cerrar el modal con el botón de cerrar
+    document.getElementById('cart-close').addEventListener('click', () => {
+      document.getElementById('cart-modal').classList.remove('open');
+    });
+
+    // (Opcional) Cerrar el modal si se hace click fuera del contenido
+    document.getElementById('cart-modal').addEventListener('click', (event) => {
+      if (event.target === document.getElementById('cart-modal')) {
+        document.getElementById('cart-modal').classList.remove('open');
+      }
+    });
+
+    // Funcionalidad del botón de Checkout del modal
+    document.getElementById('checkout-btn').addEventListener('click', async () => {
+      // Aquí deberás implementar la lógica para enviar el arreglo "cartItems" a tu servidor
+      console.log("Productos en el carrito:", cartItems);
+      /* Ejemplo de llamada al servidor:
+      try {
+        const response = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: cartItems })
+        });
+        const data = await response.json();
+        const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
+        if (error) {
+          console.error('Error en redirectToCheckout:', error);
         }
-      });
+      } catch (error) {
+        console.error('Error creando la sesión de Checkout:', error);
+      }
+      */
     });
   </script>
-  
 </body>
 </html>
