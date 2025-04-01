@@ -24,21 +24,25 @@ export default async function handler(req, res) {
     const session = await stripe.checkout.sessions.retrieve(session_id);
 
     if (session.payment_status === 'paid') {
-      // Obtenemos los line items para extraer el priceId
+      // Obtenemos los line items para extraer los priceId
       const lineItems = await stripe.checkout.sessions.listLineItems(session_id);
-      // Asumimos que el primer item es el producto comprado
-      const priceId = lineItems.data[0].price.id;
-      
-      // Obtenemos el nombre del archivo asociado al priceId
-      const fileName = priceFileMap[priceId];
-      if (!fileName) {
-        return res.status(400).json({ error: 'No se encontró archivo para este producto' });
+
+      // Mapear cada item a su archivo correspondiente (si existe)
+      const fileNames = lineItems.data
+        .map(item => {
+          const priceId = item.price.id;
+          return priceFileMap[priceId];
+        })
+        .filter(fileName => fileName); // Filtrar si no se encuentra archivo
+
+      if (fileNames.length === 0) {
+        return res.status(400).json({ error: 'No se encontraron archivos para los productos adquiridos' });
       }
 
-      // Genera un token único que expira en 1 hora e incluye el nombre del archivo
-      const downloadToken = jwt.sign({ sessionId: session.id, fileName }, JWT_SECRET, { expiresIn: '1h' });
+      // Genera un token único que expira en 1 hora e incluye el arreglo de archivos
+      const downloadToken = jwt.sign({ sessionId: session.id, fileNames }, JWT_SECRET, { expiresIn: '1h' });
 
-      // Construye la URL de descarga apuntando a tu endpoint descarga.js
+      // Construye la URL de descarga apuntando a tu endpoint de descarga
       const downloadUrl = `https://ebookscodean.vercel.app/api/descarga?token=${downloadToken}`;
 
       return res.status(200).json({ success: true, downloadUrl });
@@ -46,6 +50,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: false, message: 'El pago no está confirmado' });
     }
   } catch (error) {
+    console.error('Error creando la sesión de Checkout:', error);
     return res.status(400).json({ error: error.message });
   }
 }
