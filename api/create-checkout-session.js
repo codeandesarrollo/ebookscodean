@@ -8,18 +8,20 @@ export default async function handler(req, res) {
   }
 
   try {
-    
-    const { priceId } = req.body;
+    const { items } = req.body;
 
-    
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: 'No se proporcionaron productos' });
+    }
+
+    const line_items = items.map(item => ({
+      price: item.priceId,
+      quantity: item.quantity || 1,
+    }));
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId, 
-          quantity: 1,   
-        },
-      ],
+      line_items,
       mode: 'payment',
       success_url: 'https://ebookscodean.vercel.app/exito.html?session_id={CHECKOUT_SESSION_ID}',
       cancel_url: 'https://ebookscodean.vercel.app/',
