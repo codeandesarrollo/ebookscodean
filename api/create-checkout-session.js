@@ -19,10 +19,20 @@ export default async function handler(req, res) {
       quantity: item.quantity || 1,
     }));
 
+    // Aquí añadimos 'payment_intent_data' y 'request_three_d_secure: automatic'
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items,
       mode: 'payment',
+      payment_intent_data: {
+        payment_method_options: {
+          card: {
+            // Con 'automatic', no se fuerza 3DS, pero el banco emisor podría requerirlo
+            // si lo considera necesario.
+            request_three_d_secure: 'automatic',
+          },
+        },
+      },
       success_url: 'https://ebookscodean.vercel.app/exito.html?session_id={CHECKOUT_SESSION_ID}',
       cancel_url: 'https://ebookscodean.vercel.app/',
     });
